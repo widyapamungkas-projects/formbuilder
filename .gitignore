@@ -1,0 +1,34 @@
+# ---- Secrets (never commit) ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---- Laravel (api/) ----
+# storage/ contents are ignored by Laravel's own per-folder .gitignore files
+# (kept on purpose so the empty folder skeleton still exists after a fresh clone).
+/api/vendor/
+/api/.env
+/api/.env.*
+!/api/.env.example
+/api/storage/*.key
+/api/storage/logs/*.log
+/api/bootstrap/cache/*.php
+/api/public/hot
+/api/public/storage
+/api/.phpunit.cache
+/api/.phpunit.result.cache
+
+# ---- Frontend ----
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+*.log
+
+# ---- Editors / OS ----
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store
