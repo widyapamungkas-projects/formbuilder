@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 // Inside Docker the browser talks only to :5173; Vite forwards API calls to the
 // nginx container. This avoids CORS in dev and keeps cookies same-origin (Sanctum SPA).
 const target = process.env.API_PROXY_TARGET ?? 'http://localhost:8000'
+// Set PUBLIC_HOST when served through a public domain (e.g. Cloudflare Tunnel).
+const publicHost = process.env.PUBLIC_HOST
 
 export default defineConfig({
   plugins: [react()],
@@ -11,6 +13,8 @@ export default defineConfig({
     host: true,
     port: 5173,
     strictPort: true,
+    allowedHosts: publicHost ? [publicHost] : undefined,
+    hmr: publicHost ? { clientPort: 443 } : undefined,
     // File events from Windows bind mounts are unreliable, so poll.
     watch: { usePolling: true, interval: 300 },
     proxy: {
