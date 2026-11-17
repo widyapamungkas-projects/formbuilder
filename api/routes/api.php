@@ -12,7 +12,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::apiResource('forms', FormController::class)->except('show');
+    Route::apiResource('forms', FormController::class);
+    Route::put('/forms/{form}/definition', [FormController::class, 'updateDefinition']);
     Route::get('/storage/options', [StorageController::class, 'options']);
 
     Route::middleware('admin')->prefix('admin')->group(function () {

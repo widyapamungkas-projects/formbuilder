@@ -22,7 +22,9 @@ class FormController extends Controller
         ]);
 
         $user = $request->user();
-        $query = Form::query()->with('user:id,name');
+        $query = Form::query()
+            ->select(['id', 'user_id', 'name', 'description', 'status', 'storage_type', 'storage_config', 'created_at', 'updated_at'])
+            ->with('user:id,name');
 
         if (! $user->isAdmin()) {
             $query->where('user_id', $user->id);
@@ -97,6 +99,32 @@ class FormController extends Controller
         $form->delete();
 
         return response()->noContent();
+    }
+
+    public function show(Request $request, Form $form)
+    {
+        $this->authorizeAccess($request, $form);
+
+        return response()->json($this->present($form->load('user:id,name')) + [
+            'definition' => $form->definition ?: new \stdClass(),
+        ]);
+    }
+
+    public function updateDefinition(Request $request, Form $form)
+    {
+        $this->authorizeAccess($request, $form);
+        abort_if(strlen($request->getContent()) > 1048576, 413, 'Form is too large.');
+
+        $data = $request->validate([
+            'definition' => ['present', 'array'],
+            'definition.pages' => ['nullable', 'array', 'max:50'],
+            'definition.elements' => ['nullable', 'array', 'max:500'],
+        ]);
+
+        $form->definition = $data['definition'];
+        $form->save();
+
+        return response()->json(['ok' => true, 'updated_at' => $form->updated_at]);
     }
 
     // Not the owner and not an admin: behave as if the form does not exist.

@@ -14,7 +14,10 @@ class Form extends Model
 
     protected function casts(): array
     {
-        return ['storage_config' => 'encrypted:array'];
+        return [
+            'storage_config' => 'encrypted:array',
+            'definition' => 'array',
+        ];
     }
 
     public function user(): BelongsTo
